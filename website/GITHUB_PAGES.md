@@ -4,14 +4,20 @@ This branch deploys the website to GitHub Pages. `master` stays unchanged.
 
 ## URL
 
-https://acrogenesis.github.io/herdr/
+https://acrogenesis.com/herdr/
 
-Docs: https://acrogenesis.github.io/herdr/docs/
+Docs: https://acrogenesis.com/herdr/docs/
+
+(`acrogenesis.github.io/herdr/` redirects to the custom domain above.)
 
 ## One-time setup
 
 1. Open **Settings → Pages** on your fork.
 2. Set **Source** to **GitHub Actions**.
+3. Open **Settings → Environments → github-pages**.
+4. Under **Deployment branches**, allow the `website-deploy` branch.
+
+If either step is skipped, the workflow builds successfully but the deploy job fails with a 404 or environment protection error.
 
 ## Deploy
 
