@@ -1,7 +1,17 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-const repoBlob = 'https://github.com/ogulcancelik/herdr/blob/master/';
+const githubPages = process.env.GITHUB_PAGES === 'true';
+const githubOwner = process.env.GITHUB_PAGES_OWNER ?? 'acrogenesis';
+const githubRepo = process.env.GITHUB_PAGES_REPO ?? 'herdr';
+const site = githubPages
+  ? `https://${githubOwner}.github.io`
+  : 'https://herdr.dev';
+const base = githubPages ? `/${githubRepo}/` : '/';
+const assetOrigin = githubPages ? `${site}${base.replace(/\/$/, '')}` : site;
+const repoBlob = githubPages
+  ? `https://github.com/${githubOwner}/${githubRepo}/blob/website-deploy/`
+  : 'https://github.com/ogulcancelik/herdr/blob/master/';
 
 function rewriteHerdrLinks() {
   const docsLinks = new Map([
@@ -48,7 +58,8 @@ function walk(node, visitor) {
 }
 
 export default defineConfig({
-  site: 'https://herdr.dev',
+  site,
+  base,
   integrations: [
     starlight({
       title: 'herdr',
@@ -70,7 +81,7 @@ export default defineConfig({
       head: [
         {
           tag: 'meta',
-          attrs: { property: 'og:image', content: 'https://herdr.dev/assets/og-card-v6.png' },
+          attrs: { property: 'og:image', content: `${assetOrigin}/assets/og-card-v6.png` },
         },
         { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
         { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
@@ -83,7 +94,7 @@ export default defineConfig({
         },
         {
           tag: 'meta',
-          attrs: { name: 'twitter:image', content: 'https://herdr.dev/assets/og-card-v6.png' },
+          attrs: { name: 'twitter:image', content: `${assetOrigin}/assets/og-card-v6.png` },
         },
         {
           tag: 'meta',
@@ -94,7 +105,9 @@ export default defineConfig({
         },
       ],
       editLink: {
-        baseUrl: 'https://github.com/ogulcancelik/herdr/edit/master/',
+        baseUrl: githubPages
+          ? `https://github.com/${githubOwner}/${githubRepo}/edit/website-deploy/`
+          : 'https://github.com/ogulcancelik/herdr/edit/master/',
       },
       lastUpdated: true,
       disable404Route: true,

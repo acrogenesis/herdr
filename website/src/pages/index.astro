@@ -1,7 +1,14 @@
 ---
 import { readFile } from 'node:fs/promises';
 
-const homepage = await readFile(new URL('../../index.html', import.meta.url), 'utf8');
+let homepage = await readFile(new URL('../../index.html', import.meta.url), 'utf8');
+const base = import.meta.env.BASE_URL;
+if (base !== '/') {
+  homepage = homepage
+    .replaceAll('href="/', `href="${base}`)
+    .replaceAll("href='/", `href='${base}`)
+    .replaceAll('src="/', `src="${base}`);
+}
 ---
 
 <Fragment set:html={homepage} />
